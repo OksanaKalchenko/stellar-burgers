@@ -4,18 +4,22 @@ import { useLocation } from 'react-router-dom';
 import { OrderCardProps } from './type';
 import { TIngredient } from '@utils-types';
 import { OrderCardUI } from '../ui/order-card';
+import { useSelector } from '../../services/store';
+import { getIngredients } from '../../services/slices/ingredientsSlice';
 
 const maxIngredients = 6;
 
+// Отображение карточки заказа
 export const OrderCard: FC<OrderCardProps> = memo(({ order }) => {
+  // Определение текущего пути
   const location = useLocation();
 
-  /** TODO: взять переменную из стора */
-  const ingredients: TIngredient[] = [];
+  const ingredients: TIngredient[] = useSelector(getIngredients);
 
   const orderInfo = useMemo(() => {
     if (!ingredients.length) return null;
 
+    // Список ингредиентов, которые входят в заказ
     const ingredientsInfo = order.ingredients.reduce(
       (acc: TIngredient[], item: string) => {
         const ingredient = ingredients.find((ing) => ing._id === item);
@@ -25,6 +29,7 @@ export const OrderCard: FC<OrderCardProps> = memo(({ order }) => {
       []
     );
 
+    // Общая стоимость ингредиентов, входящих в заказ
     const total = ingredientsInfo.reduce((acc, item) => acc + item.price, 0);
 
     const ingredientsToShow = ingredientsInfo.slice(0, maxIngredients);

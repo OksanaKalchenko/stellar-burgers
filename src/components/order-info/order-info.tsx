@@ -1,21 +1,42 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
-import { TIngredient } from '@utils-types';
+import { TIngredient, TOrder } from '@utils-types';
+import { useDispatch, useSelector } from '../../services/store';
+import { getIngredients } from '../../services/slices/ingredientsSlice';
+import { getOrdersFeeds } from '../../services/slices/feedsSlice';
+import {
+  userOrdersList,
+  userOrdersByNumber,
+  getUserOrderByNumber
+} from '../../services/slices/userOrdersSlice';
+import { useParams } from 'react-router-dom';
 
-export const OrderInfo: FC = () => {
-  /** TODO: взять переменные orderData и ingredients из стора */
-  const orderData = {
-    createdAt: '',
-    ingredients: [],
-    _id: '',
-    status: '',
-    name: '',
-    updatedAt: 'string',
-    number: 0
-  };
+type TOrderInfo = {
+  showHeader: boolean;
+};
 
-  const ingredients: TIngredient[] = [];
+// Отображение информации о конкретном заказе
+export const OrderInfo: FC<TOrderInfo> = ({ showHeader }) => {
+  const dispatch = useDispatch();
+
+  const orderNumber = Number(useParams().number);
+
+  const feedOrders = useSelector(getOrdersFeeds);
+  const userOrders = useSelector(userOrdersList);
+  const userOrderByNumber = useSelector(userOrdersByNumber);
+
+  const orders: TOrder[] = feedOrders.concat(userOrders, userOrderByNumber);
+
+  const orderData = orders.find((item) => item.number === orderNumber);
+
+  useEffect(() => {
+    if (!orderData) {
+      dispatch(getUserOrderByNumber(orderNumber));
+    }
+  }, []);
+
+  const ingredients: TIngredient[] = useSelector(getIngredients);
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
@@ -27,6 +48,7 @@ export const OrderInfo: FC = () => {
       [key: string]: TIngredient & { count: number };
     };
 
+    // Подсчет количества каждого ингредиента в заказе
     const ingredientsInfo = orderData.ingredients.reduce(
       (acc: TIngredientsWithCount, item) => {
         if (!acc[item]) {
@@ -46,6 +68,7 @@ export const OrderInfo: FC = () => {
       {}
     );
 
+    // Подсчет общей стоимости заказа
     const total = Object.values(ingredientsInfo).reduce(
       (acc, item) => acc + item.price * item.count,
       0
@@ -59,9 +82,10 @@ export const OrderInfo: FC = () => {
     };
   }, [orderData, ingredients]);
 
+  // Если информация о заказе не готова, отображаем компонент Preloader
   if (!orderInfo) {
     return <Preloader />;
   }
 
-  return <OrderInfoUI orderInfo={orderInfo} />;
+  return <OrderInfoUI orderInfo={orderInfo} showHeader={showHeader} />;
 };

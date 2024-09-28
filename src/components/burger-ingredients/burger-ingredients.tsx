@@ -3,18 +3,26 @@ import { useInView } from 'react-intersection-observer';
 
 import { TTabMode } from '@utils-types';
 import { BurgerIngredientsUI } from '../ui/burger-ingredients';
+import { useSelector } from '../../services/store';
+import { getIngredientsState } from '../../services/slices/ingredientsSlice';
 
 export const BurgerIngredients: FC = () => {
-  /** TODO: взять переменные из стора */
-  const buns = [];
-  const mains = [];
-  const sauces = [];
+  const { ingredients, loading, error } = useSelector(getIngredientsState);
 
+  // Фильтр ингридиентов по типу
+  const buns = ingredients.filter((ingredient) => ingredient.type === 'bun');
+  const mains = ingredients.filter((ingredient) => ingredient.type === 'main');
+  const sauces = ingredients.filter(
+    (ingredient) => ingredient.type === 'sauce'
+  );
+
+  // Состояние текущей выбранной вкладки и рефы для заголовков вкладок
   const [currentTab, setCurrentTab] = useState<TTabMode>('bun');
   const titleBunRef = useRef<HTMLHeadingElement>(null);
   const titleMainRef = useRef<HTMLHeadingElement>(null);
   const titleSaucesRef = useRef<HTMLHeadingElement>(null);
 
+  // Хуки для определения видимости ингредиентов
   const [bunsRef, inViewBuns] = useInView({
     threshold: 0
   });
@@ -27,6 +35,7 @@ export const BurgerIngredients: FC = () => {
     threshold: 0
   });
 
+  // Эффект для обновления текущей вкладки при изменении видимости
   useEffect(() => {
     if (inViewBuns) {
       setCurrentTab('bun');
@@ -37,6 +46,7 @@ export const BurgerIngredients: FC = () => {
     }
   }, [inViewBuns, inViewFilling, inViewSauces]);
 
+  // Обработчик клика по вкладке
   const onTabClick = (tab: string) => {
     setCurrentTab(tab as TTabMode);
     if (tab === 'bun')
@@ -46,8 +56,6 @@ export const BurgerIngredients: FC = () => {
     if (tab === 'sauce')
       titleSaucesRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
-
-  return null;
 
   return (
     <BurgerIngredientsUI
