@@ -47,8 +47,6 @@ export const ingredientsSlise = createSlice({
   }
 });
 
-export const ingredientsReducer = ingredientsSlise.reducer;
-
 export const {
   getIngredientsState,
   getIngredientsLoadingState,

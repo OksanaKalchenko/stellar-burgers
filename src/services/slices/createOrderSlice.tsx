@@ -44,8 +44,6 @@ export const createOrderSlice = createSlice({
   }
 });
 
-export const createOrderReducer = createOrderSlice.reducer;
-
 export const { resetOrder } = createOrderSlice.actions;
 export const { getOrderRequest, getOrderModalData } =
   createOrderSlice.selectors;

@@ -55,6 +55,4 @@ export const userOrdersSlice = createSlice({
   }
 });
 
-export const userOrderReducer = userOrdersSlice.reducer;
-
 export const { userOrdersList, userOrdersByNumber } = userOrdersSlice.selectors;

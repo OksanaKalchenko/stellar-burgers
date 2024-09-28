@@ -52,7 +52,5 @@ export const feedsSlice = createSlice({
   }
 });
 
-export const feedsReducer = feedsSlice.reducer;
-
 export const { getOrdersFeeds, getTotalFeeds, getTotalTodayFeeds } =
   feedsSlice.selectors;

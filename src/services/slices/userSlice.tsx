@@ -91,7 +91,5 @@ export const userSlice = createSlice({
   }
 });
 
-export const userReducer = userSlice.reducer;
-
 export const { isAuchCheckedSelector, getUser, getUserName, getError } =
   userSlice.selectors;
