@@ -3,10 +3,23 @@ import ReactDOM from 'react-dom';
 
 import { TModalProps } from './type';
 import { ModalUI } from '@ui';
+import { useLocation } from 'react-router-dom';
 
 const modalRoot = document.getElementById('modals');
 
+// Модальное окно
 export const Modal: FC<TModalProps> = memo(({ title, onClose, children }) => {
+  // Определение текущего пути и установление заголовков
+  const location = useLocation();
+
+  if (
+    !title &&
+    (location.pathname.includes('/feed/') ||
+      location.pathname.includes('/profile/orders/'))
+  ) {
+    title = '#' + location.pathname.split('/').pop() || '';
+  }
+
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       e.key === 'Escape' && onClose();
