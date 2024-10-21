@@ -6,16 +6,16 @@ import {
   registerUserApi,
   loginUserApi,
   logoutApi
-} from '@api';
+} from '../../utils/burger-api';
 
 type TUserState = {
-  isAuchChecked: boolean;
+  isAuthChecked: boolean;
   user: TUser;
   error: string | undefined;
 };
 
-const initialState: TUserState = {
-  isAuchChecked: false,
+export const initialState: TUserState = {
+  isAuthChecked: false,
   user: {
     email: '',
     name: ''
@@ -37,7 +37,7 @@ export const userSlice = createSlice({
   initialState,
   reducers: {},
   selectors: {
-    isAuchCheckedSelector: (state) => state.isAuchChecked,
+    isAuthCheckedSelector: (state) => state.isAuthChecked,
     getUser: (state) => state.user,
     getUserName: (state) => state.user.name,
     getError: (state) => state.error
@@ -45,7 +45,7 @@ export const userSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(logoutUser.fulfilled, (state) => {
-        state.isAuchChecked = false;
+        state.isAuthChecked = false;
         state.user = { email: '', name: '' };
         state.error = '';
       })
@@ -57,7 +57,7 @@ export const userSlice = createSlice({
           loginUser.fulfilled
         ),
         (state, action) => {
-          state.isAuchChecked = true;
+          state.isAuthChecked = true;
           state.user = action.payload.user;
           state.error = '';
         }
@@ -71,7 +71,7 @@ export const userSlice = createSlice({
           logoutUser.rejected
         ),
         (state, action) => {
-          state.isAuchChecked = false;
+          state.isAuthChecked = false;
           state.error = action.error.message;
         }
       )
@@ -84,12 +84,12 @@ export const userSlice = createSlice({
           logoutUser.pending
         ),
         (state) => {
-          state.isAuchChecked = false;
+          state.isAuthChecked = false;
           state.error = '';
         }
       );
   }
 });
 
-export const { isAuchCheckedSelector, getUser, getUserName, getError } =
+export const { isAuthCheckedSelector, getUser, getUserName, getError } =
   userSlice.selectors;
