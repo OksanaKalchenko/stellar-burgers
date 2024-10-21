@@ -13,7 +13,7 @@ import {
   getOrderRequest,
   getOrderModalData
 } from '../../services/slices/createOrderSlice';
-import { isAuchCheckedSelector } from '../../services/slices/userSlice';
+import { isAuthCheckedSelector } from '../../services/slices/userSlice';
 
 export const BurgerConstructor: FC = () => {
   /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
@@ -22,7 +22,7 @@ export const BurgerConstructor: FC = () => {
   const orderModalData = useSelector(getOrderModalData);
   const constructorItems = useSelector(getIngredientsSelector);
   const orderRequest = useSelector(getOrderRequest);
-  const isAuth = useSelector(isAuchCheckedSelector);
+  const isAuth = useSelector(isAuthCheckedSelector);
 
   useEffect(() => {
     if (orderModalData) {
